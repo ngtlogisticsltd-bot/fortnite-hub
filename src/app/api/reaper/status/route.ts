@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { orchestrator, allTeams } from '@/lib/reaper/orchestrator';
 
 export async function GET() {

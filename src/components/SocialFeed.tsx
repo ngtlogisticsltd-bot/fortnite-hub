@@ -10,8 +10,8 @@ export default function SocialFeed() {
         <iframe 
           width="100%" 
           height="100%" 
-          src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-          title="YouTube video player" 
+          src="https://www.youtube.com/embed/5UfP1qj6pG0" 
+          title="Fortnite Chapter 5 Season 2 Trailer" 
           frameBorder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowFullScreen
@@ -23,9 +23,13 @@ export default function SocialFeed() {
       id: 2,
       type: 'twitter',
       embed: (
-        <div className="bg-white rounded-lg p-2 flex items-center justify-center text-black font-bold h-32">
-           {/* In a real app we'd load the Twitter script. Using a static placeholder for the embed block. */}
-           [Twitter Official Embed Block]
+        <div className="bg-white/5 rounded-lg p-6 flex flex-col gap-2 border border-white/10">
+           <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-400 rounded-full" />
+              <span className="font-bold text-sm">@FortniteGame</span>
+           </div>
+           <p className="text-xs text-white/70 italic">"The power of the gods is within your reach. Midas Rises now!"</p>
+           <span className="text-[10px] text-white/20 uppercase font-black">Official Update</span>
         </div>
       )
     }

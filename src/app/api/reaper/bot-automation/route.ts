@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { orchestrator } from '@/lib/reaper/orchestrator';
 import { runAutopilotCycle } from '@/lib/reaper/autopilot';
 import { runMaintenanceCycle } from '@/lib/reaper/teams/errorMaintenance';

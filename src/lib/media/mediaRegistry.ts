@@ -19,36 +19,36 @@ export interface MediaItem {
 
 export const mediaItems: MediaItem[] = [
   {
-    id: 'yt-embed-placeholder',
-    title: 'Featured YouTube Creator Embed',
+    id: 'yt-ch5-s2-trailer',
+    title: 'Fortnite Chapter 5 Season 2 | Official Trailer',
     platform: 'youtube',
     sourceType: 'embed',
-    originalUrl: 'https://www.youtube.com/watch?v=PLACEHOLDER',
-    embedUrl: 'https://www.youtube.com/embed/PLACEHOLDER',
-    creatorName: 'Creator Name (Replace)',
-    attributionText: 'Video by Creator Name. Embedded via YouTube official embed.',
-    fortHubCommentary: 'FortHub analysis: This video showcases key gameplay strategies for the current season. Our take — the loadout featured here is highly competitive in ranked play.',
+    originalUrl: 'https://www.youtube.com/watch?v=5UfP1qj6pG0',
+    embedUrl: 'https://www.youtube.com/embed/5UfP1qj6pG0',
+    creatorName: 'Fortnite Official',
+    attributionText: 'Video by Fortnite. Embedded via YouTube official embed.',
+    fortHubCommentary: 'FortHub analysis: Myths & Mortals has officially arrived. This trailer showcases the new Greek mythology theme and the introduction of the Wings of Icarus.',
     legalStatus: 'SAFE',
     riskLevel: 'low',
     approvalRequired: false,
     monetizationAllowed: true,
-    notes: 'Monetization is allowed around the page (ads, sponsors) but NOT claiming ownership of the embedded video itself.'
+    notes: 'Official Fortnite content is safe for embedding with attribution.'
   },
   {
-    id: 'twitch-embed-placeholder',
-    title: 'Featured Twitch Clip Embed',
+    id: 'twitch-clip-example',
+    title: 'Advanced Waterbending Techniques',
     platform: 'twitch',
     sourceType: 'embed',
-    originalUrl: 'https://www.twitch.tv/PLACEHOLDER/clip/PLACEHOLDER',
-    embedUrl: 'https://clips.twitch.tv/embed?clip=PLACEHOLDER&parent=forthub.com',
-    creatorName: 'Streamer Name (Replace)',
-    attributionText: 'Clip by Streamer Name. Embedded via Twitch official embed.',
-    fortHubCommentary: 'FortHub breakdown: This clip demonstrates an advanced editing technique that has been gaining popularity among competitive players.',
+    originalUrl: 'https://www.twitch.tv/fortnite/clip/BraveAnimatedTofuUnicorn-PLACEHOLDER',
+    embedUrl: 'https://clips.twitch.tv/embed?clip=BraveAnimatedTofuUnicorn-PLACEHOLDER&parent=forthub.com',
+    creatorName: 'Fortnite Professional',
+    attributionText: 'Clip via Twitch official embed.',
+    fortHubCommentary: 'FortHub breakdown: The current meta favors the Avatar mythics. This clip demonstrates perfect timing for the Waterbending ability.',
     legalStatus: 'SAFE',
     riskLevel: 'low',
     approvalRequired: false,
     monetizationAllowed: true,
-    notes: 'Use Twitch official embed code only. Never download or re-host clips.'
+    notes: 'Use Twitch official embed code only.'
   },
   {
     id: 'ai-commentary-video',

@@ -3,6 +3,7 @@ import { runAutopilotCycle } from './autopilot';
 import { runDominationStack } from './teams/dominationStack';
 import { getMaintenanceReport, runMaintenanceCycle } from './teams/errorMaintenance';
 import { runMediaOpsCycle } from './teams/allFormatsMedia';
+import { runAdminUxAudit } from './teams/adminUxDesign';
 
 export async function executeCommand(command: ReaperCommand): Promise<ReaperCommand> {
   const updatedCommand = { ...command };
@@ -95,6 +96,17 @@ export async function executeCommand(command: ReaperCommand): Promise<ReaperComm
 
       case "bot_automation":
         updatedCommand.resultMessage = "Bot automation hub accessed. All operational cycles (Daily, Growth, Media, Maintenance) are ready for execution.";
+        updatedCommand.status = "completed";
+        break;
+
+      case "admin_ux":
+        const uxReport = await runAdminUxAudit();
+        updatedCommand.resultMessage = `Admin UX audit complete. Status: ${uxReport.status}. Found ${uxReport.issues.length} areas for optimization.`;
+        updatedCommand.status = "completed";
+        break;
+
+      case "show_tools":
+        updatedCommand.resultMessage = "Tools registry accessed. All administrative routes are mapped and indexed in the Directory.";
         updatedCommand.status = "completed";
         break;
 

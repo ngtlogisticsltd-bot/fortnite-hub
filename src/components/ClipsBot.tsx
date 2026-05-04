@@ -13,10 +13,24 @@ export default function ClipsBot() {
     },
     {
       id: 2,
-      title: "How to perfectly counter Waterbending",
+      title: "HOW TO COUNTER WATERBENDING",
       author: "MrSavage",
       views: "850K",
       thumb: "https://cdn2.unrealengine.com/fortnite-competitive-1920x1080-602931211.jpg"
+    },
+    {
+      id: 3,
+      title: "MIDAS RETURN EASTER EGG FOUND!",
+      author: "SypherPK",
+      views: "2.1M",
+      thumb: "https://cdn2.unrealengine.com/fortnite-battle-royale-v29-01-midas-rises-blog-1920x1080-0c4d8e789885.jpg"
+    },
+    {
+      id: 4,
+      title: "NEW SHOTGUN IS BROKEN... 💀",
+      author: "Clix",
+      views: "1.5M",
+      thumb: "https://cdn2.unrealengine.com/fortnite-v29-10-march-26-hotfix-blog-1920x1080-5a39626920f7.jpg"
     }
   ];
 

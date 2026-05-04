@@ -95,6 +95,14 @@ export function routeCommand(input: string): ReaperCommand {
     intent = "bot_automation";
     targetTeam = "REAPER Orchestrator";
     actions = ["run_full_automation_cycle", "check_cron_readiness"];
+  } else if (normalized.includes("simplify admin") || normalized.includes("admin ux")) {
+    intent = "admin_ux";
+    targetTeam = "Admin UX & Design";
+    actions = ["run_admin_ux_audit", "reorganize_dashboard"];
+  } else if (normalized.includes("show all tools") || normalized.includes("tools directory")) {
+    intent = "show_tools";
+    targetTeam = "Admin UX & Design";
+    actions = ["list_all_admin_routes"];
   } else if (normalized.includes("live bot") || normalized.includes("scheduled ops") || normalized.includes("cron")) {
     intent = "live_ops";
     targetTeam = "REAPER Orchestrator";

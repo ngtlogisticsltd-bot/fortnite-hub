@@ -18,6 +18,16 @@ const questions = [
     q: "Which of these is NOT a rarity tier in Fortnite?",
     options: ["Mythic", "Legendary", "Exotic", "Supreme"],
     a: 3
+  },
+  {
+    q: "What is the name of the monster that fought the Mecha Team Leader?",
+    options: ["Cattus", "Doggus", "The Leviathan", "Galactus"],
+    a: 0
+  },
+  {
+    q: "Which character is the leader of the Seven?",
+    options: ["The Visitor", "The Paradigm", "The Foundation", "The Scientist"],
+    a: 2
   }
 ];
 

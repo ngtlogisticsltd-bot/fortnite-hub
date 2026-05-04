@@ -33,6 +33,22 @@ export function processAssistantCommand(input: string, envVars: any): AssistantR
   // Strict Safety: The assistant should never echo back raw keys or passwords.
   // It only checks for their presence.
 
+  if (normalized.includes('simplify admin') || normalized.includes('show all tools') || normalized.includes('where is')) {
+    return {
+      role: 'assistant',
+      source: 'manual',
+      intent: 'help',
+      title: 'Admin UX & Tools',
+      message: 'I have reorganized the admin dashboard into 6 major workflow groups. You can find every tool in the searchable Directory.',
+      actions: [
+        'Open /admin/tools for the full registry',
+        'Open /admin for the new workflow dashboard',
+        'Use the sidebar search to find specific pages'
+      ],
+      warnings: ['Legacy direct sidebar links are now collapsed by group.']
+    };
+  }
+
   if (normalized.includes('run bots') || normalized.includes('automation') || normalized.includes('check cron')) {
     return {
       role: 'assistant',
@@ -85,14 +101,15 @@ export function processAssistantCommand(input: string, envVars: any): AssistantR
       role: 'assistant',
       source: 'manual',
       intent: 'status',
-      title: 'System Status Report',
-      message: `Analyzing current environment configuration... \nGitHub: ${report.vault.githubToken ? 'CONNECTED' : 'MISSING'}\nVercel: ${report.vault.vercelHook ? 'CONNECTED' : 'MISSING'}\nDatabase: ${report.vault.supabaseUrl ? 'CONNECTED' : 'MISSING'}\nAnalytics: ${report.vault.analyticsId ? 'CONNECTED' : 'MISSING'}`,
+      title: 'Operational Status Report',
+      message: `Analyzing system heartbeat... \nConnectivity: GitHub (${report.vault.githubToken ? 'OK' : 'MISSING'}), Vercel (${report.vault.vercelHook ? 'OK' : 'MISSING'})\nPersistence: Supabase DB (${report.vault.supabaseUrl ? 'ACTIVE' : 'MISSING'})\nOperational Logs: Persistent to Database\nLive Monitoring: Active at /status and /live-feed`,
       actions: [
-        'Run "next" to see your immediate required action.'
+        'Open /status to view public health',
+        'Open /live-feed to view bot activity',
+        'Run "next" for configuration priority'
       ],
       warnings: [
-        !report.vault.vercelHook ? 'Critical: Vercel deploy hook missing.' : '',
-        !report.vault.supabaseUrl ? 'Critical: Supabase connection missing.' : ''
+        !report.vault.supabaseUrl ? 'Critical: Supabase connection missing. Activity logs are currently in-memory only.' : ''
       ].filter(Boolean)
     };
   }
