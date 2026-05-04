@@ -1,0 +1,20 @@
+{
+  "crons": [
+    {
+      "path": "/api/reaper/run",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/reaper/daily",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/reaper/growth",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/reaper/maintenance",
+      "schedule": "*/30 * * * *"
+    }
+  ]
+}

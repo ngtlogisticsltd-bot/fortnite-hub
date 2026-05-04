@@ -83,6 +83,22 @@ export function routeCommand(input: string): ReaperCommand {
     intent = "check_logs";
     targetTeam = "Error & Maintenance";
     actions = ["get_maintenance_report"];
+  } else if (normalized.includes("maintenance") || normalized.includes("repair")) {
+    intent = "maintenance";
+    targetTeam = "Error & Maintenance";
+    actions = ["run_maintenance_cycle", "get_maintenance_report"];
+  } else if (normalized.includes("media") || normalized.includes("clip") || normalized.includes("thumbnail")) {
+    intent = "media_ops";
+    targetTeam = "Media Rights & AI Clips";
+    actions = ["run_media_planning_cycle"];
+  } else if (normalized.includes("automation") || normalized.includes("start bots")) {
+    intent = "bot_automation";
+    targetTeam = "REAPER Orchestrator";
+    actions = ["run_full_automation_cycle", "check_cron_readiness"];
+  } else if (normalized.includes("live bot") || normalized.includes("scheduled ops") || normalized.includes("cron")) {
+    intent = "live_ops";
+    targetTeam = "REAPER Orchestrator";
+    actions = ["check_scheduled_operations", "check_cron_readiness"];
   } else if (normalized.includes("run growth") || normalized.includes("growth plan")) {
     intent = "run_growth_cycle";
     targetTeam = "Growth Engine";

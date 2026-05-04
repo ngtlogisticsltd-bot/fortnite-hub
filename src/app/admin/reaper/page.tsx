@@ -170,6 +170,27 @@ export default function ReaperDashboard() {
               </Link>
            </div>
         </div>
+        <div className="bg-[#12131c] border border-white/10 rounded-xl p-6">
+           <h3 className="font-bold text-white uppercase mb-4 flex items-center gap-2"><Clock className="w-5 h-5 text-blue-500" /> Scheduled Operations</h3>
+           <div className="space-y-3 text-xs">
+              <div className="flex justify-between items-center py-2 border-b border-white/5">
+                 <span className="text-white/50 font-bold uppercase tracking-widest">Cron Status</span>
+                 <span className="text-green-400 font-black">ACTIVE</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/5">
+                 <span className="text-white/50 font-bold uppercase tracking-widest">Hourly Cycle</span>
+                 <span className="text-white/80">Every 0th min</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/5">
+                 <span className="text-white/50 font-bold uppercase tracking-widest">Daily Cycle</span>
+                 <span className="text-white/80">09:00 UTC</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                 <span className="text-white/50 font-bold uppercase tracking-widest">Growth Cycle</span>
+                 <span className="text-white/80">10:00 UTC</span>
+              </div>
+           </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

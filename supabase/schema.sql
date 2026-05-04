@@ -1,59 +1,47 @@
--- Live Feed Items Table
-CREATE TABLE IF NOT EXISTS live_feed_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    title TEXT NOT NULL,
-    type TEXT NOT NULL,
-    source TEXT NOT NULL,
-    source_label TEXT NOT NULL,
-    category TEXT NOT NULL,
-    priority TEXT NOT NULL,
-    route_target TEXT NOT NULL,
-    legal_status TEXT NOT NULL,
-    summary TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- REAPER BOT RUNS
+CREATE TABLE IF NOT EXISTS bot_runs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  bot_id TEXT NOT NULL,
+  team_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  message TEXT,
+  risk_level TEXT,
+  logs JSONB DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Community Chat Messages Table
-CREATE TABLE IF NOT EXISTS chat_messages (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nickname TEXT NOT NULL,
-    message TEXT NOT NULL,
-    topic TEXT NOT NULL DEFAULT 'General',
-    status TEXT NOT NULL DEFAULT 'pending',
-    moderation_note TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- MEDIA PLANNING QUEUE
+CREATE TABLE IF NOT EXISTS media_queue (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  plan TEXT,
+  attribution TEXT,
+  status TEXT DEFAULT 'draft',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Weekly Draw Entries Table
-CREATE TABLE IF NOT EXISTS weekly_draw_entries (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nickname TEXT NOT NULL,
-    email TEXT,
-    comment TEXT,
-    status TEXT NOT NULL DEFAULT 'pending',
-    agreed_rules BOOLEAN DEFAULT FALSE,
-    selected_winner BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- APPROVAL GATE
+CREATE TABLE IF NOT EXISTS approval_queue (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  entity_type TEXT NOT NULL, -- 'content', 'command', 'media'
+  entity_id TEXT NOT NULL,
+  requested_by TEXT NOT NULL,
+  risk_level TEXT NOT NULL,
+  details JSONB,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  resolved_at TIMESTAMP WITH TIME ZONE
 );
 
--- REAPER Commands Queue Table
-CREATE TABLE IF NOT EXISTS reaper_commands (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    input TEXT NOT NULL,
-    intent TEXT NOT NULL,
-    target_team TEXT NOT NULL,
-    risk_level TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'received',
-    approval_required BOOLEAN DEFAULT FALSE,
-    actions JSONB,
-    result_message TEXT,
-    warnings JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- MAINTENANCE REPORTS
+CREATE TABLE IF NOT EXISTS maintenance_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  overall_status TEXT NOT NULL,
+  errors_found INTEGER DEFAULT 0,
+  errors_resolved INTEGER DEFAULT 0,
+  details JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
--- Add indexes for performance
-CREATE INDEX IF NOT EXISTS idx_chat_status ON chat_messages(status);
-CREATE INDEX IF NOT EXISTS idx_live_priority ON live_feed_items(priority);
-CREATE INDEX IF NOT EXISTS idx_draw_status ON weekly_draw_entries(status);
-CREATE INDEX IF NOT EXISTS idx_reaper_status ON reaper_commands(status);

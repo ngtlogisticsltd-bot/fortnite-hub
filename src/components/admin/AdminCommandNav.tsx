@@ -40,6 +40,7 @@ export default function AdminCommandNav({ health }: { health: any }) {
       icon: <Activity className="w-4 h-4" />,
       links: [
         { href: "/admin/maintenance", label: "Maintenance", icon: <ShieldAlert className="w-4 h-4 text-primary" /> },
+        { href: "/admin/bot-automation", label: "Bot Automation", icon: <Zap className="w-4 h-4" /> },
         { href: "/admin/domain-setup", label: "Domain Setup", icon: <Globe className="w-4 h-4" /> },
         { href: "/admin/env-setup", label: "Env Setup", icon: <Lock className="w-4 h-4" /> },
         { href: "/admin/it-dev", label: "IT & Dev", icon: <Cpu className="w-4 h-4" /> },

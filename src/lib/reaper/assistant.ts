@@ -33,6 +33,22 @@ export function processAssistantCommand(input: string, envVars: any): AssistantR
   // Strict Safety: The assistant should never echo back raw keys or passwords.
   // It only checks for their presence.
 
+  if (normalized.includes('run bots') || normalized.includes('automation') || normalized.includes('check cron')) {
+    return {
+      role: 'assistant',
+      source: 'manual',
+      intent: 'help',
+      title: 'Bot Automation Control',
+      message: 'You can trigger all operational bot cycles (Daily, Growth, Maintenance, Media) and check Vercel cron readiness from the Automation dashboard.',
+      actions: [
+        'Open /admin/bot-automation for full control',
+        'Trigger Safe Cycle to verify bot connectivity',
+        'Check Cron Readiness before production deploy'
+      ],
+      warnings: ['Scheduled operations will only run after your code is deployed to Vercel with a valid domain.']
+    };
+  }
+
   if (normalized.includes('domain setup') || normalized.includes('finish launch') || normalized.includes('live ops')) {
     return {
       role: 'assistant',
