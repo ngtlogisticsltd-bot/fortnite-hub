@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Best Settings",
+    "icon": "settings",
+    "desc": "Pro sensitivities, graphic configs, and keybinds.",
+    "affiliateLink": "https://amazon.com/dp/B0813X9HZQ?tag=forthub-20"
+  },
+  {
+    "title": "XP Maps",
+    "icon": "map",
+    "desc": "Fastest creative maps to level up your battle pass.",
+    "affiliateLink": ""
+  },
+  {
+    "title": "Weapon Loadouts",
+    "icon": "target",
+    "desc": "Current meta weapons and attachments to carry.",
+    "affiliateLink": ""
+  },
+  {
+    "title": "Beginner Tips",
+    "icon": "book-open",
+    "desc": "How to survive and secure your first Victory Royale.",
+    "affiliateLink": "https://amazon.com/dp/B07VG7P2R1?tag=forthub-20"
+  }
+]

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block sensitive admin and system routes
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /admin/growth
+Disallow: /api/
+
+Sitemap: https://fortnitehub.app/sitemap.xml
