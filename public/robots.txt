@@ -4,7 +4,8 @@ Allow: /
 # Block sensitive admin and system routes
 Disallow: /admin
 Disallow: /admin/*
-Disallow: /admin/growth
+Disallow: /admin/domain-setup
+Disallow: /admin/env-setup
 Disallow: /api/
 
 Sitemap: https://fortnitehub.app/sitemap.xml

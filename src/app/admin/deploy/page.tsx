@@ -3,10 +3,12 @@ import { CheckCircle2, AlertTriangle, Play } from 'lucide-react';
 
 import AssistantWidget from '@/components/admin/AssistantWidget';
 import AutoFillPanel from '@/components/admin/AutoFillPanel';
+import AdminHelpWidget from '@/components/admin/AdminHelpWidget';
 
 export default function DeployPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <AdminHelpWidget context="Deployment" />
       <div>
         <h2 className="text-3xl font-black uppercase tracking-widest text-white">Deployment Readiness</h2>
         <p className="text-white/50 text-sm mt-1">Pre-flight checklist for Vercel production deployment.</p>

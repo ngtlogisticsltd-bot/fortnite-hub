@@ -41,6 +41,7 @@ export default function Navbar() {
   ];
 
   const infoDropdown = [
+    { name: 'Help', href: '/help', badge: 'NEW' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
     { name: 'Submit', href: '/submit' },

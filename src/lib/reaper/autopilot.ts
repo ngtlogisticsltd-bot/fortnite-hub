@@ -1,7 +1,8 @@
-import { CommandRisk, ReaperCommand } from './commandTypes';
+import { CommandRisk } from './commandTypes';
 import { routeCommand } from './commandRouter';
 import { executeCommand } from './actionEngine';
-import { addCommand, getCommands, updateCommandInQueue } from './commandQueue';
+import { addCommand, updateCommandInQueue } from './commandQueue';
+import { runMaintenanceCycle } from './teams/errorMaintenance';
 
 export interface AutopilotCheck {
   botId: string;
@@ -27,6 +28,26 @@ export async function runAutopilotCycle(): Promise<AutopilotResult> {
   const checks: AutopilotCheck[] = [];
   const actionsTriggered: string[] = [];
   const tasksCreated: string[] = [];
+
+  // 0. MAINTENANCE & ERROR FIX TEAM
+  const maintenanceReport = await runMaintenanceCycle();
+  if (maintenanceReport.overallStatus !== 'healthy') {
+    checks.push({
+      botId: 'error-fix-team',
+      name: 'Error & Fix Team',
+      status: maintenanceReport.overallStatus === 'critical' ? 'CRITICAL' : 'ISSUE',
+      issue: `${maintenanceReport.activeErrors.length} runtime issues detected`,
+      suggestedAction: 'repair site',
+      riskLevel: 'low'
+    });
+  } else {
+    checks.push({
+      botId: 'error-fix-team',
+      name: 'Error & Fix Team',
+      status: 'OK',
+      riskLevel: 'low'
+    });
+  }
 
   // 1. Health Monitor Bot
   checks.push({

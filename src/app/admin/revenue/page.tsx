@@ -3,10 +3,12 @@ import { DollarSign, BarChart3, ShieldAlert } from 'lucide-react';
 import { adConfig } from '@/lib/monetization/adConfig';
 import { affiliateConfig } from '@/lib/monetization/affiliateConfig';
 import AutoFillPanel from '@/components/admin/AutoFillPanel';
+import AdminHelpWidget from '@/components/admin/AdminHelpWidget';
 
 export default function RevenueDashboard() {
   return (
     <div className="space-y-8">
+      <AdminHelpWidget context="Revenue" />
       <div className="flex items-center justify-between border-b border-white/10 pb-6">
         <div>
           <h2 className="text-3xl font-black uppercase tracking-widest text-white flex items-center gap-3">

@@ -4,6 +4,7 @@ import { GitBranch, Globe, CheckCircle2, AlertTriangle, ShieldAlert, Terminal, Z
 
 import AssistantWidget from '@/components/admin/AssistantWidget';
 import AutoFillPanel from '@/components/admin/AutoFillPanel';
+import AdminHelpWidget from '@/components/admin/AdminHelpWidget';
 
 export default function AdminGithubDashboard() {
   const [data, setData] = useState<any>(null);
@@ -29,6 +30,7 @@ export default function AdminGithubDashboard() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <AdminHelpWidget context="GitHub Launch" />
       
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/10 pb-6">

@@ -7,7 +7,7 @@ import {
   Shield, Link2, Share2, CheckSquare, Rocket, GitBranch,
   DollarSign, MonitorSmartphone, Server, 
   Users, MessageSquare, Gift, GitPullRequest, Globe2,
-  ChevronDown, Search, Heart
+  ChevronDown, Search, Heart, ShieldAlert, HelpCircle, Globe, Lock
 } from 'lucide-react';
 
 export default function AdminCommandNav({ health }: { health: any }) {
@@ -28,6 +28,8 @@ export default function AdminCommandNav({ health }: { health: any }) {
       links: [
         { href: "/admin/command-center", label: "Command Center", icon: <Terminal className="w-4 h-4" /> },
         { href: "/admin/assistant", label: "Assistant", icon: <Cpu className="w-4 h-4" /> },
+        { href: "/admin/help", label: "Help Bot", icon: <HelpCircle className="w-4 h-4 text-primary" /> },
+        { href: "/admin/setup-links", label: "Setup Links", icon: <Globe className="w-4 h-4" /> },
         { href: "/admin/reaper", label: "Orchestrator", icon: <Activity className="w-4 h-4" /> },
         { href: "/admin/daily", label: "Daily Engine", icon: <Zap className="w-4 h-4" /> },
         { href: "/admin/growth", label: "Growth Engine", icon: <TrendingUp className="w-4 h-4" /> },
@@ -37,6 +39,9 @@ export default function AdminCommandNav({ health }: { health: any }) {
       name: 'OPERATIONS',
       icon: <Activity className="w-4 h-4" />,
       links: [
+        { href: "/admin/maintenance", label: "Maintenance", icon: <ShieldAlert className="w-4 h-4 text-primary" /> },
+        { href: "/admin/domain-setup", label: "Domain Setup", icon: <Globe className="w-4 h-4" /> },
+        { href: "/admin/env-setup", label: "Env Setup", icon: <Lock className="w-4 h-4" /> },
         { href: "/admin/it-dev", label: "IT & Dev", icon: <Cpu className="w-4 h-4" /> },
         { href: "/admin/nav-health", label: "Nav Health", icon: <Link2 className="w-4 h-4" /> },
         { href: "/admin/data-dispatcher", label: "Data Dispatcher", icon: <Share2 className="w-4 h-4" /> },
@@ -49,10 +54,10 @@ export default function AdminCommandNav({ health }: { health: any }) {
       name: 'BUSINESS',
       icon: <DollarSign className="w-4 h-4" />,
       links: [
+        { href: "/admin/control-core", label: "Control Core", icon: <Shield className="w-4 h-4" /> },
         { href: "/admin/revenue", label: "Revenue Hub", icon: <DollarSign className="w-4 h-4" /> },
         { href: "/admin/ads", label: "Ads", icon: <MonitorSmartphone className="w-4 h-4" /> },
         { href: "/admin/accounts", label: "Accounts", icon: <Server className="w-4 h-4" /> },
-        { href: "/admin/control-core", label: "Control Core", icon: <Shield className="w-4 h-4" /> },
         { href: "/admin/autofill", label: "Auto-Fill", icon: <Zap className="w-4 h-4" /> },
         { href: "/admin/integrations", label: "Integrations", icon: <Link2 className="w-4 h-4" /> },
       ]

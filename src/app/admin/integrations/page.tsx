@@ -2,6 +2,7 @@
 import { Link2, ShieldAlert, CheckCircle2, AlertTriangle, XCircle, Activity } from 'lucide-react';
 import { operationsTeams, OperationsTeam, TeamStatus } from '@/lib/reaper/operationsTeams';
 import AutoFillPanel from '@/components/admin/AutoFillPanel';
+import AdminHelpWidget from '@/components/admin/AdminHelpWidget';
 
 export default function IntegrationsDashboard() {
   const getStatusIcon = (status: TeamStatus) => {
@@ -38,6 +39,7 @@ export default function IntegrationsDashboard() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <AdminHelpWidget context="Integrations" />
       <div className="flex items-center justify-between border-b border-white/10 pb-6">
         <div>
           <h2 className="text-3xl font-black uppercase tracking-widest text-white flex items-center gap-3">

@@ -1,6 +1,7 @@
 import { ReaperCommand } from './commandTypes';
 import { runAutopilotCycle } from './autopilot';
 import { runDominationStack } from './teams/dominationStack';
+import { getMaintenanceReport, runMaintenanceCycle } from './teams/errorMaintenance';
 
 export async function executeCommand(command: ReaperCommand): Promise<ReaperCommand> {
   const updatedCommand = { ...command };
@@ -35,6 +36,21 @@ export async function executeCommand(command: ReaperCommand): Promise<ReaperComm
     case "run_growth_cycle":
       await runDominationStack();
       updatedCommand.resultMessage = "Growth Engine cycle complete. SEO ideas, Creator targets, and Revenue plans updated in /admin/growth.";
+      updatedCommand.status = "completed";
+      break;
+    case "health_check":
+      const healthReport = await runMaintenanceCycle();
+      updatedCommand.resultMessage = `System health scan complete. Status: ${healthReport.overallStatus.toUpperCase()}. ${healthReport.activeErrors.length} issues found.`;
+      updatedCommand.status = "completed";
+      break;
+    case "fix_errors":
+      const fixReport = await runMaintenanceCycle();
+      updatedCommand.resultMessage = `Repair cycle complete. All low-risk issues resolved. ${fixReport.activeErrors.length} items remaining in queue.`;
+      updatedCommand.status = "completed";
+      break;
+    case "check_logs":
+      const logReport = getMaintenanceReport();
+      updatedCommand.resultMessage = `Log analysis: ${logReport.activeErrors.length} active issues, ${logReport.resolvedErrors.length} recently resolved. System uptime: ${logReport.uptime}.`;
       updatedCommand.status = "completed";
       break;
     case "create_seo_pages":

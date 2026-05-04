@@ -8,69 +8,93 @@ export interface AssistantResponse {
   warnings: string[];
 }
 
+import { getVaultStatus } from "@/lib/vault/envVault";
+import { getProfile, getNextStep } from "@/lib/controlCore/profile";
+import { calculateIntakeCompletion } from "@/lib/controlCore/intakeTeams";
+import { getIntakeData } from "@/lib/controlCore/masterIntake";
+import { getHelpBotResponse } from "@/lib/help/helpBot";
+
+export function getControlReport() {
+  const status = getVaultStatus();
+  const intake = getIntakeData();
+  const completion = calculateIntakeCompletion();
+  return {
+    profile: getProfile(),
+    intake,
+    completion,
+    vault: status,
+    next: getNextStep(status),
+  };
+}
+
 export function processAssistantCommand(input: string, envVars: any): AssistantResponse {
   const normalized = input.toLowerCase().trim();
   
   // Strict Safety: The assistant should never echo back raw keys or passwords.
   // It only checks for their presence.
 
-  if (normalized === 'help') {
+  if (normalized.includes('domain setup') || normalized.includes('finish launch') || normalized.includes('live ops')) {
     return {
       role: 'assistant',
       source: 'manual',
       intent: 'help',
-      title: 'Command Menu',
-      message: 'I am the REAPER Assistant. I operate purely on deterministic local logic to guide your Fan Site deployment. I will not fake actions, and I cannot execute terminal commands on your behalf.',
+      title: 'Production Launch Guide',
+      message: 'To finalize your live deployment, you must configure your custom domain and environment variables in Vercel.',
       actions: [
-        'status - Check overall system readiness',
-        'next - See your immediate next step',
-        'deploy - Vercel deployment guide',
-        'domain - Domain setup guide',
-        'github - GitHub repo guide',
-        'supabase - Database connection guide',
-        'ads - Ad network readiness',
-        'traffic - Traffic operation rules',
-        'daily - Explain the Daily Engine',
-        'revenue - Revenue integration status',
-        'legal - Legal compliance checklist'
+        'Open /admin/domain-setup for DNS values',
+        'Open /admin/env-setup for production variables',
+        'Trigger Vercel redeploy once variables are saved'
       ],
-      warnings: ['I am explicitly forbidden from executing shell commands automatically.']
+      warnings: ['I cannot change your DNS or Vercel settings directly. You must click the official links provided.']
+    };
+  }
+
+  if (normalized === 'help' || normalized.includes('help setup') || normalized.includes('how do i')) {
+    const helpRes = getHelpBotResponse('admin', input);
+    return {
+      role: 'assistant',
+      source: 'manual',
+      intent: 'help',
+      title: helpRes.title,
+      message: helpRes.answer,
+      actions: helpRes.nextActions,
+      warnings: helpRes.warnings
     };
   }
 
   if (normalized === 'status') {
-    const isDomainLive = !!envVars.NEXT_PUBLIC_SITE_URL;
-    const isDbLive = !!envVars.DATABASE_URL;
-    const isRepoLive = !!envVars.GITHUB_REPO_URL;
+    const report = getControlReport();
     
     return {
       role: 'assistant',
       source: 'manual',
       intent: 'status',
       title: 'System Status Report',
-      message: `Analyzing current environment configuration... \nDomain: ${isDomainLive ? 'CONNECTED' : 'MISSING'}\nDatabase: ${isDbLive ? 'CONNECTED' : 'MISSING'}\nGitHub: ${isRepoLive ? 'CONNECTED' : 'MISSING'}`,
+      message: `Analyzing current environment configuration... \nGitHub: ${report.vault.githubToken ? 'CONNECTED' : 'MISSING'}\nVercel: ${report.vault.vercelHook ? 'CONNECTED' : 'MISSING'}\nDatabase: ${report.vault.supabaseUrl ? 'CONNECTED' : 'MISSING'}\nAnalytics: ${report.vault.analyticsId ? 'CONNECTED' : 'MISSING'}`,
       actions: [
         'Run "next" to see your immediate required action.'
       ],
       warnings: [
-        !isDomainLive ? 'Critical: Next.js public URL not configured.' : '',
-        !isDbLive ? 'Critical: Supabase connection missing. Submissions fall back to memory.' : ''
+        !report.vault.vercelHook ? 'Critical: Vercel deploy hook missing.' : '',
+        !report.vault.supabaseUrl ? 'Critical: Supabase connection missing.' : ''
       ].filter(Boolean)
     };
   }
 
   if (normalized === 'next') {
-    let nextStep = 'Create a GitHub Repository (Run "github")';
-    if (envVars.GITHUB_REPO_URL && !envVars.NEXT_PUBLIC_SITE_URL) nextStep = 'Deploy to Vercel (Run "deploy")';
-    if (envVars.NEXT_PUBLIC_SITE_URL && !envVars.DATABASE_URL) nextStep = 'Connect Supabase (Run "supabase")';
+    const report = getControlReport();
+    const missing = report.completion.missingFields;
 
     return {
       role: 'assistant',
       source: 'manual',
       intent: 'next',
       title: 'Next Best Action',
-      message: `Based on your environment variables, I have calculated your next immediate priority.`,
-      actions: [nextStep],
+      message: `Setup is ${report.completion.percentage}% complete. Based on your Control Core intake, I have identified ${missing.length} missing configuration points.`,
+      actions: missing.length > 0 ? [
+        `Fill missing field: ${missing[0]}`,
+        'Go to /admin/control-core to complete intake.'
+      ] : ['All core intake fields are filled. Ready for optimization.'],
       warnings: []
     };
   }

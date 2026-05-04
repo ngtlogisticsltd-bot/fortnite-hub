@@ -71,6 +71,18 @@ export function routeCommand(input: string): ReaperCommand {
     intent = "list_missing_setup";
     targetTeam = "Setup Execution";
     actions = ["scan_control_core_missing", "check_domain_dns"];
+  } else if (normalized.includes("health check") || normalized.includes("is site ok")) {
+    intent = "health_check";
+    targetTeam = "Error & Maintenance";
+    actions = ["run_maintenance_cycle", "get_maintenance_report"];
+  } else if (normalized.includes("fix error") || normalized.includes("repair site")) {
+    intent = "fix_errors";
+    targetTeam = "Error & Maintenance";
+    actions = ["run_maintenance_cycle", "auto_resolve_low_risk"];
+  } else if (normalized.includes("check logs") || normalized.includes("error logs")) {
+    intent = "check_logs";
+    targetTeam = "Error & Maintenance";
+    actions = ["get_maintenance_report"];
   } else if (normalized.includes("run growth") || normalized.includes("growth plan")) {
     intent = "run_growth_cycle";
     targetTeam = "Growth Engine";
