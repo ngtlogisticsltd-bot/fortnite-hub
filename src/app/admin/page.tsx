@@ -1,165 +1,243 @@
 "use client";
-import { Rocket, Bot, Film, TrendingUp, Activity, HelpCircle, Shield, Globe, Lock, GitBranch, Terminal, Zap, MonitorSmartphone, Share2, Users, MessageSquare, Cpu, Search, Layout, Settings } from "lucide-react";
+
+import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+import { Activity, ShieldCheck, Database, DollarSign, Globe, CheckCircle2, ChevronRight, Play, Link as LinkIcon, Lock } from "lucide-react";
 import Link from "next/link";
-import AdminQuickActions from "@/components/admin/AdminQuickActions";
 import AdminHelpWidget from "@/components/admin/AdminHelpWidget";
 
 export default function AdminDashboard() {
-  const cards = [
-    {
-      title: "Launch Setup",
-      desc: "Connect your core infrastructure and prepare for production launch.",
-      icon: <Rocket className="w-8 h-8 text-blue-400" />,
-      primary: { label: "Control Core", href: "/admin/control-core" },
-      status: "NEEDS_SETUP",
-      links: [
-        { label: "Domain Setup", href: "/admin/domain-setup" },
-        { label: "Env Setup", href: "/admin/env-setup" },
-        { label: "GitHub Launch", href: "/admin/github-launch" },
-        { label: "Deployment", href: "/api/deploy" }
-      ]
-    },
-    {
-      title: "Bot Operations",
-      desc: "Control the REAPER fleet and manage automated site maintenance.",
-      icon: <Bot className="w-8 h-8 text-primary" />,
-      primary: { label: "Bot Automation", href: "/admin/bot-automation" },
-      status: "ACTIVE",
-      links: [
-        { label: "REAPER Fleet", href: "/admin/reaper" },
-        { label: "Daily Engine", href: "/admin/daily" },
-        { label: "Growth Engine", href: "/admin/growth" },
-        { label: "Maintenance", href: "/admin/maintenance" },
-        { label: "Issues & Fixes", href: "/admin/nav-health" }
-      ]
-    },
-    {
-      title: "Content & Media",
-      desc: "Review automated submissions, media assets, and social planning.",
-      icon: <Film className="w-8 h-8 text-yellow-400" />,
-      primary: { label: "Media Ops", href: "/admin/media" },
-      status: "SYNCED",
-      links: [
-        { label: "Data Dispatcher", href: "/admin/data-dispatcher" },
-        { label: "Submissions", href: "/admin/submissions" },
-        { label: "Weekly Draw", href: "/admin/weekly-draw" },
-        { label: "Community Chat", href: "/admin/community/chat" }
-      ]
-    },
-    {
-      title: "Money & Growth",
-      desc: "Monitor revenue streams, ad performance, and creator partnerships.",
-      icon: <TrendingUp className="w-8 h-8 text-green-400" />,
-      primary: { label: "Revenue Hub", href: "/admin/revenue" },
-      status: "READY",
-      links: [
-        { label: "Ads Manager", href: "/admin/ads" },
-        { label: "Traffic Stats", href: "/admin/traffic" },
-        { label: "Analytics", href: "/admin/analytics" },
-        { label: "Creator Tracker", href: "/admin/creator-tracker" }
-      ]
-    },
-    {
-      title: "System Health",
-      desc: "Technical health monitoring, uptime status, and development tools.",
-      icon: <Activity className="w-8 h-8 text-red-400" />,
-      primary: { label: "IT & Dev", href: "/admin/it-dev" },
-      status: "OK",
-      links: [
-        { label: "Nav Health", href: "/admin/nav-health" },
-        { label: "Setup Checklist", href: "/admin/setup" },
-        { label: "Execution Logs", href: "/admin/reaper" },
-        { label: "Site Status", href: "/api/health" }
-      ]
-    },
-    {
-      title: "Help & Setup",
-      desc: "Quick links to setup guides, integrations, and automation helpers.",
-      icon: <HelpCircle className="w-8 h-8 text-purple-400" />,
-      primary: { label: "Help Bot", href: "/admin/help" },
-      status: "READY",
-      links: [
-        { label: "Setup Links", href: "/admin/setup-links" },
-        { label: "Accounts", href: "/admin/accounts" },
-        { label: "Integrations", href: "/admin/integrations" },
-        { label: "Auto-Fill Teams", href: "/admin/control-core" }
-      ]
+  const [setupData, setSetupData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function fetchStatus() {
+    try {
+      const res = await fetch("/api/admin/setup-guide", { cache: "no-store" });
+      const data = await res.json();
+      if (data.success) {
+        setSetupData(data.status);
+      }
+    } catch (err) {
+      console.error(err);
     }
-  ];
+  }
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  const markStep = async (step: string, value: any) => {
+    await fetch("/api/admin/setup-guide?action=mark-step", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step, value })
+    });
+    fetchStatus();
+  };
+
+  const getStatusBadge = (status: string) => {
+    if (status.includes("LIVE") || status.includes("READY") || status.includes("VERIFIED") || status.includes("CONNECTED")) {
+      return <span className="bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">{status}</span>;
+    }
+    if (status.includes("OPTIONAL")) {
+      return <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">{status}</span>;
+    }
+    return <span className="bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">{status}</span>;
+  };
+
+  const runNextCrew = async () => {
+    setLoading(true);
+    await fetch("/api/reaper/next-crew", { method: "POST" });
+    setLoading(false);
+    alert("Next Crew sync started. Check Live Feed for logs.");
+  };
+
+  const seedLiveFeed = async () => {
+    setLoading(true);
+    await fetch("/api/reaper/seed-live");
+    setLoading(false);
+    alert("Live feed seeded.");
+  };
+
+  if (!setupData) {
+    return (
+      <div className="min-h-screen bg-[#05050a] text-white flex items-center justify-center">
+        <p className="animate-pulse font-black uppercase tracking-widest text-primary">Loading Admin Dashboard...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-12 pb-24">
+    <div className="p-8 max-w-5xl mx-auto space-y-8 pb-24">
       <AdminHelpWidget context="Dashboard" />
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-12">
-        <div className="space-y-2">
-           <div className="flex items-center gap-3 mb-2">
-              <span className="bg-primary/20 text-primary text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-primary/20">Admin Master</span>
-              <span className="bg-white/5 text-white/40 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-white/10">Env: Development</span>
-           </div>
-           <h1 className="text-5xl font-black uppercase tracking-tighter text-white">COMMAND <span className="text-primary">CENTER</span></h1>
-           <p className="text-white/40 text-sm font-bold uppercase tracking-[0.2em]">Autonomous Fleet Management & Media Control</p>
-        </div>
-        <div className="bg-[#12131c] p-6 rounded-3xl border border-white/5 space-y-4">
-           <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Quick Operational Actions</p>
-           <AdminQuickActions />
-        </div>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {cards.map((card, i) => (
-          <div key={i} className="bg-[#12131c] border border-white/5 rounded-[2.5rem] p-10 hover:border-white/10 transition-all group flex flex-col">
-            <div className="flex items-start justify-between mb-8">
-               <div className="p-5 bg-black/40 rounded-3xl border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                  {card.icon}
-               </div>
-               <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
-                 card.status === 'ACTIVE' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
-                 card.status === 'NEEDS_SETUP' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' : 
-                 'bg-white/5 text-white/40 border-white/10'
-               }`}>
-                 {card.status}
-               </span>
-            </div>
-            
-            <div className="space-y-4 flex-1">
-               <h2 className="text-2xl font-black uppercase text-white tracking-tight">{card.title}</h2>
-               <p className="text-sm text-white/40 font-medium leading-relaxed">{card.desc}</p>
-               
-               <div className="pt-6 grid grid-cols-2 gap-y-3 gap-x-4 border-t border-white/5">
-                 {card.links.map((link, j) => (
-                   <Link key={j} href={link.href} className="text-[10px] font-black text-white/30 hover:text-primary uppercase tracking-widest transition-colors flex items-center gap-2">
-                     <div className="w-1 h-1 bg-white/20 rounded-full" /> {link.label}
-                   </Link>
-                 ))}
-               </div>
-            </div>
-
-            <Link 
-              href={card.primary.href}
-              className="mt-10 w-full bg-white/5 hover:bg-primary hover:text-black py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-white transition-all text-center flex items-center justify-center gap-3 border border-white/10 hover:border-primary shadow-[0_10px_30px_rgba(0,0,0,0.3)] group-hover:shadow-[0_10px_30px_rgba(0,255,157,0.1)]"
-            >
-              {card.primary.label} <Zap className="w-4 h-4 fill-current" />
-            </Link>
+      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="bg-primary/20 text-primary text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-primary/20">Admin Master</span>
           </div>
-        ))}
+          <h1 className="text-5xl font-black uppercase tracking-tighter">Guided <span className="text-primary">Setup</span></h1>
+          <p className="mt-4 text-white/40 max-w-2xl font-medium">
+            Step-by-step tasks the system cannot legally or technically do alone. Complete these to launch safely.
+          </p>
+        </div>
+        
+        <div className="flex flex-wrap gap-3">
+          <button onClick={runNextCrew} disabled={loading} className="rounded-xl bg-primary/10 border border-primary/20 px-4 py-2 text-sm font-black text-primary uppercase tracking-widest hover:bg-primary/20 transition">
+            Run Next Crew
+          </button>
+          <button onClick={seedLiveFeed} disabled={loading} className="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-black text-white uppercase tracking-widest hover:bg-white/10 transition">
+            Seed Live Feed
+          </button>
+          <Link href="/live-feed" target="_blank" className="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-black text-white uppercase tracking-widest hover:bg-white/10 transition">
+            Live Feed
+          </Link>
+          <Link href="/status" target="_blank" className="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-black text-white uppercase tracking-widest hover:bg-white/10 transition">
+            Status
+          </Link>
+        </div>
       </div>
 
-      {/* Footer Nav */}
-      <div className="flex items-center justify-center gap-8 pt-12 border-t border-white/5">
-         <Link href="/admin/tools" className="flex items-center gap-3 text-[10px] font-black text-white/30 uppercase tracking-[0.3em] hover:text-white transition-all">
-            <Search className="w-4 h-4" /> Full Tools Directory
-         </Link>
-         <Link href="/admin/reaper" className="flex items-center gap-3 text-[10px] font-black text-white/30 uppercase tracking-[0.3em] hover:text-white transition-all">
-            <Layout className="w-4 h-4" /> Fleet Orchestrator
-         </Link>
-         <Link href="/" className="flex items-center gap-3 text-[10px] font-black text-primary uppercase tracking-[0.3em] hover:text-white transition-all">
-            <Settings className="w-4 h-4" /> Back to Public Site
-         </Link>
-      </div>
+      <div className="space-y-8">
+        {/* Stage 1: Site Health */}
+        <section>
+          <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+            <Globe className="w-6 h-6 text-primary" /> Stage 1: Site Health
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl relative">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-lg text-white">Registrar DNS Setup</h3>
+                {getStatusBadge(setupData.dns.status)}
+              </div>
+              <p className="text-sm text-white/50 mb-4">You must manually point your domain at the registrar.</p>
+              <div className="bg-black/30 p-3 rounded font-mono text-xs text-white/70 mb-4">
+                A @ -{'>'} 216.198.79.1<br/>
+                CNAME www -{'>'} cname.vercel-dns.com
+              </div>
+              {setupData.dns.status !== "VERIFIED" && (
+                <button onClick={() => markStep('dns', true)} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded uppercase font-bold tracking-widest">Mark Verified</button>
+              )}
+            </div>
 
+            <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl relative">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-lg text-white">Supabase Setup</h3>
+                {getStatusBadge(setupData.supabase.status)}
+              </div>
+              <p className="text-sm text-white/50 mb-4">Provide persistence by adding Supabase ENV keys to Vercel and running schema.sql.</p>
+              <div className="text-xs text-white/40 space-y-1 mb-4">
+                <p>1. Create Project</p>
+                <p>2. Run schema.sql</p>
+                <p>3. Add Vercel ENV vars</p>
+              </div>
+              {setupData.supabase.status !== "VERIFIED" && (
+                <button onClick={() => markStep('supabase', true)} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded uppercase font-bold tracking-widest">Mark Verified</button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Stage 2: Live Data */}
+        <section>
+          <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+            <Database className="w-6 h-6 text-primary" /> Stage 2: Live Data
+          </h2>
+          <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl">
+             <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-lg text-white">Protected API Setup</h3>
+                {getStatusBadge(setupData.apiKeys.status)}
+              </div>
+              <p className="text-sm text-white/50 mb-4">Some live data requires keys. Fortnite APIs and YouTube Data APIs unlock automatic syncing.</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs bg-black/50 px-2 py-1 rounded border border-white/10 text-white/40"><Lock className="inline w-3 h-3 mr-1"/> Fortnite Shop API (Missing)</span>
+                <span className="text-xs bg-black/50 px-2 py-1 rounded border border-white/10 text-white/40"><Lock className="inline w-3 h-3 mr-1"/> YouTube API (Optional)</span>
+              </div>
+          </div>
+        </section>
+
+        {/* Stage 3: Content */}
+        <section>
+          <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+            <ShieldCheck className="w-6 h-6 text-primary" /> Stage 3: Content
+          </h2>
+          <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-lg text-white">Creator Video Approval</h3>
+                {getStatusBadge(setupData.creator.status)}
+              </div>
+              <p className="text-sm text-white/50 mb-4">Due to strict Fan Site Policies, you must manually approve and embed YouTube links. Never upload raw MP4s.</p>
+              
+              {setupData.creator.links.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-2 text-white/40">Approved Links:</p>
+                  <ul className="text-sm space-y-1">
+                    {setupData.creator.links.map((link: any, i: number) => (
+                      <li key={i} className="text-white/70 flex items-center gap-2"><LinkIcon className="w-3 h-3"/> {link.title}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+          </div>
+        </section>
+
+        {/* Stage 4: Money */}
+        <section>
+          <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+            <DollarSign className="w-6 h-6 text-primary" /> Stage 4: Money
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl">
+               <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-lg text-white">Affiliate Accounts</h3>
+                  {getStatusBadge(setupData.affiliate.status)}
+                </div>
+                <p className="text-sm text-white/50 mb-4">You must personally register for Amazon Associates, eBay Partner Network, etc. The bot cannot sign contracts.</p>
+                <button className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded uppercase font-bold tracking-widest">Add Program</button>
+            </div>
+
+            <div className="bg-[#12131c] border border-white/5 p-6 rounded-2xl">
+               <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-lg text-white">Sponsor Pre-Check</h3>
+                  {getStatusBadge(setupData.sponsor.status)}
+                </div>
+                <p className="text-sm text-white/50 mb-4">Before reaching out to sponsors, verify these are ready:</p>
+                <ul className="space-y-2 mb-4">
+                  {Object.entries(setupData.sponsor.checks).map(([key, val]) => (
+                     <li key={key} className="flex items-center gap-2 text-sm text-white/70">
+                       <input type="checkbox" checked={val as boolean} onChange={(e) => markStep(`sponsor_${key}`, e.target.checked)} className="rounded border-white/20 bg-black/50 accent-primary" />
+                       <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                     </li>
+                  ))}
+                </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Stage 5: Launch */}
+        <section>
+          <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+            <Activity className="w-6 h-6 text-primary" /> Stage 5: Launch
+          </h2>
+          <div className="bg-primary/5 border border-primary/20 p-6 rounded-2xl">
+             <h3 className="font-bold text-lg text-primary mb-4">Final Launch Checklist</h3>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+               {setupData.launchChecklist.map((item: any, i: number) => (
+                 <div key={i} className="flex items-center gap-3">
+                   {item.done ? <CheckCircle2 className="w-5 h-5 text-primary" /> : <div className="w-5 h-5 rounded-full border-2 border-white/20" />}
+                   <span className={item.done ? "text-white" : "text-white/40"}>{item.name}</span>
+                 </div>
+               ))}
+             </div>
+          </div>
+        </section>
+
+        <div className="pt-8 text-center">
+          <Link href="/admin/reaper" className="text-xs text-white/30 uppercase tracking-[0.3em] hover:text-white transition">
+            Go to Advanced REAPER Tools
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

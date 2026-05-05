@@ -101,7 +101,9 @@ function extractYouTubeId(url: string) {
   return "";
 }
 
-export function addClip(input: {
+import { supabase } from "@/lib/supabase";
+
+export async function addClip(input: {
   title: string;
   creator: string;
   youtubeUrl: string;
@@ -125,6 +127,25 @@ export function addClip(input: {
 
   clips = [item, ...clips].slice(0, 50);
 
+  if (process.env.SUPABASE_URL) {
+    await supabase.from('media_items').insert([{
+      id: item.id,
+      title: item.title,
+      platform: 'youtube',
+      source_type: 'embed',
+      original_url: item.youtubeUrl,
+      embed_url: `https://www.youtube.com/embed/${item.videoId}`,
+      creator_name: item.creator,
+      attribution_text: `Clip by ${item.creator}`,
+      forthub_commentary: item.viewsLabel,
+      legal_status: 'SAFE',
+      risk_level: 'low',
+      approval_required: false,
+      monetization_allowed: true,
+      notes: ''
+    }]);
+  }
+
   logEvent({
     type: "MEDIA_TEAM",
     message: `YouTube clip added: ${item.title}`,
@@ -133,11 +154,39 @@ export function addClip(input: {
   return item;
 }
 
-export function getClips() {
+export async function getClips() {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const { data } = await supabase.from('media_items').select('*').eq('source_type', 'embed');
+    if (data && data.length > 0) {
+      return data.map(row => ({
+        id: row.id,
+        title: row.title,
+        creator: row.creator_name,
+        youtubeUrl: row.original_url,
+        videoId: extractYouTubeId(row.original_url) || '',
+        viewsLabel: row.forthub_commentary || '',
+        status: 'LIVE'
+      })) as LaunchClip[];
+    }
+  }
   return clips;
 }
 
-export function getNews() {
+export async function getNews() {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const { data } = await supabase.from('news_items').select('*');
+    if (data && data.length > 0) {
+      return data.map(row => ({
+        id: row.id,
+        title: row.title,
+        summary: row.body,
+        sourceName: row.tab_title || "Official",
+        sourceUrl: row.image || "",
+        status: row.status,
+        createdAt: row.created_at
+      })) as NewsItem[];
+    }
+  }
   return news;
 }
 
@@ -145,11 +194,41 @@ export function getAffiliateItems() {
   return affiliateItems;
 }
 
-export function runLaunchFixTeam() {
+export async function runLaunchFixTeam() {
   logEvent({
     type: "LAUNCH_FIX_TEAM",
     message: "Launch Fix Team checked media, news, item shop, sponsor, ads, and affiliate readiness.",
   });
+
+  if (process.env.SUPABASE_URL) {
+    // Write default news
+    await supabase.from('news_items').upsert(news.map(n => ({
+      id: n.id,
+      title: n.title,
+      body: n.summary,
+      tab_title: n.sourceName,
+      image: n.sourceUrl,
+      status: n.status
+    })));
+
+    // Write default clips
+    await supabase.from('media_items').upsert(clips.map(c => ({
+      id: c.id,
+      title: c.title,
+      platform: 'youtube',
+      source_type: 'embed',
+      original_url: c.youtubeUrl,
+      embed_url: `https://www.youtube.com/embed/${c.videoId}`,
+      creator_name: c.creator,
+      attribution_text: `Clip by ${c.creator}`,
+      forthub_commentary: c.viewsLabel,
+      legal_status: 'SAFE',
+      risk_level: 'low',
+      approval_required: false,
+      monetization_allowed: true,
+      notes: ''
+    })));
+  }
 
   return {
     success: true,

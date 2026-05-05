@@ -111,6 +111,13 @@ export default function AdminCommandNav({ health }: { health?: any }) {
       {/* Primary Links */}
       <div className="p-4 space-y-1">
          <Link 
+            href="/admin/setup" 
+            className={`flex items-center gap-4 p-3 rounded-xl transition-all ${pathname === '/admin/setup' ? 'bg-primary text-black' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+         >
+            <ShieldCheck className="w-5 h-5 shrink-0" />
+            {isHovered && <span className="text-[11px] font-black uppercase tracking-widest">Launch Setup</span>}
+         </Link>
+         <Link 
             href="/admin" 
             className={`flex items-center gap-4 p-3 rounded-xl transition-all ${pathname === '/admin' ? 'bg-primary text-black' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
          >
@@ -123,6 +130,22 @@ export default function AdminCommandNav({ health }: { health?: any }) {
          >
             <Terminal className="w-5 h-5 shrink-0" />
             {isHovered && <span className="text-[11px] font-black uppercase tracking-widest">Command</span>}
+         </Link>
+         <Link 
+            href="/live-feed" 
+            target="_blank"
+            className={`flex items-center gap-4 p-3 rounded-xl transition-all text-white/40 hover:text-white hover:bg-white/5`}
+         >
+            <Activity className="w-5 h-5 shrink-0" />
+            {isHovered && <span className="text-[11px] font-black uppercase tracking-widest">Live Feed</span>}
+         </Link>
+         <Link 
+            href="/status" 
+            target="_blank"
+            className={`flex items-center gap-4 p-3 rounded-xl transition-all text-white/40 hover:text-white hover:bg-white/5`}
+         >
+            <Activity className="w-5 h-5 shrink-0" />
+            {isHovered && <span className="text-[11px] font-black uppercase tracking-widest">Status</span>}
          </Link>
       </div>
 

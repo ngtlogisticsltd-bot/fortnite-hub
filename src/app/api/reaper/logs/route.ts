@@ -1,11 +1,21 @@
-import { NextResponse } from "next/server";
-import { getLogs } from "@/lib/reaper/core/log";
-
-export const dynamic = "force-dynamic";
+import { NextResponse } from 'next/server';
+import { orchestrator } from '@/lib/reaper/orchestrator';
 
 export async function GET() {
-  return NextResponse.json({
-    success: true,
-    logs: await getLogs(),
-  });
+  try {
+    const logs = orchestrator.getLogs();
+
+    console.log("API LOGS:", logs.length);
+
+    return NextResponse.json({
+      success: true,
+      logs: logs || [],
+    });
+  } catch (err: any) {
+    return NextResponse.json({
+      success: false,
+      error: err.message,
+      logs: [],
+    });
+  }
 }

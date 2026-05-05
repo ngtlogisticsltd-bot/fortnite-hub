@@ -10,10 +10,12 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const clips = await getClips();
+  const news = await getNews();
   return NextResponse.json({
     success: true,
-    clips: getClips(),
-    news: getNews(),
+    clips,
+    news,
     affiliateItems: getAffiliateItems(),
   });
 }
@@ -22,7 +24,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
 
   if (body.action === "add-clip") {
-    const clip = addClip({
+    const clip = await addClip({
       title: body.title,
       creator: body.creator,
       youtubeUrl: body.youtubeUrl,
@@ -36,7 +38,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const result = runLaunchFixTeam();
+  const result = await runLaunchFixTeam();
 
   return NextResponse.json(result);
 }

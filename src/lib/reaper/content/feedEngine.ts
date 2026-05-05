@@ -48,7 +48,7 @@ export async function runFeedOps() {
   // Persist to Supabase
   if (process.env.SUPABASE_URL) {
     try {
-      await supabase.from('feed_items').insert(generated.map(item => ({
+      await supabase.from('live_feed_items').insert(generated.map(item => ({
         id: item.id,
         title: item.title,
         summary: item.summary,
@@ -71,7 +71,31 @@ export async function runFeedOps() {
   return generated;
 }
 
-export function getFeedItems() {
+export async function getFeedItems() {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const { data, error } = await supabase
+        .from('live_feed_items')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (!error && data) {
+        return data.map(row => ({
+          id: row.id,
+          title: row.title,
+          summary: row.summary,
+          sourceName: row.source_name,
+          sourceUrl: row.source_url,
+          type: row.type,
+          status: row.status,
+          createdAt: row.created_at,
+        }));
+      }
+    } catch (err) {
+      console.error("Supabase Feed Fetch Error:", err);
+    }
+  }
   return feedItems;
 }
 
@@ -85,7 +109,7 @@ export async function addManualFeedItem(item: Omit<FeedItem, "id" | "createdAt">
   feedItems = [created, ...feedItems].slice(0, 100);
 
   if (process.env.SUPABASE_URL) {
-    await supabase.from('feed_items').insert([{
+    await supabase.from('live_feed_items').insert([{
       id: created.id,
       title: created.title,
       summary: created.summary,

@@ -36,6 +36,12 @@ export async function logEvent(event: Omit<ReaperLogEvent, "id" | "time">) {
         metadata: event,
         source: event.source || 'live'
       }]);
+      
+      await supabase.from('proof_events').insert([{
+        type: event.type || 'BOT_RUN',
+        message: event.message,
+        metadata: event
+      }]);
     } catch (err) {
       console.error("Supabase Log Error:", err);
     }

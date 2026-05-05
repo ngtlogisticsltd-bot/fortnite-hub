@@ -6,10 +6,10 @@ export default function ItemShopPage() {
         <h1 className="mt-2 text-4xl font-black uppercase">Daily Item Shop</h1>
 
         <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
-          <h2 className="text-2xl font-bold">Live Item Shop Sync Coming Soon</h2>
+          <h2 className="text-2xl font-bold">Live item shop sync needs a safe API/source.</h2>
           <p className="mx-auto mt-3 max-w-2xl text-white/60">
-            FortHub is preparing safe item shop syncing. Until the live data connection is approved,
-            use the official Fortnite ecosystem and trusted tracker links below.
+            Until the live data connection is approved and verified, please use the official Fortnite ecosystem 
+            and trusted tracker links provided below.
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">

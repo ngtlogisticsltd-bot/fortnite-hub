@@ -8,22 +8,7 @@ type MediaItem = {
   tags: string[];
 };
 
-const mediaItems: MediaItem[] = [
-  {
-    title: "Fortnite Official YouTube Channel",
-    creator: "Fortnite",
-    sourceUrl: "https://www.youtube.com/watch?v=WJW-bzXZM8M",
-    summary: "Official Fortnite video embed. Replace or add more approved links as needed.",
-    tags: ["OFFICIAL", "YOUTUBE", "SAFE"],
-  },
-  {
-    title: "Fortnite Chapter Trailer",
-    creator: "Fortnite",
-    sourceUrl: "https://www.youtube.com/watch?v=Y0nzW_6AYfU",
-    summary: "Official or approved YouTube embed slot.",
-    tags: ["EMBED", "SAFE"],
-  },
-];
+import { useEffect, useState } from "react";
 
 function getEmbedUrl(url: string) {
   const youtubeWatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
@@ -38,6 +23,25 @@ function getEmbedUrl(url: string) {
 }
 
 export default function MediaPage() {
+  const [mediaItems, setMediaItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/reaper/launch-fix')
+      .then(res => res.json())
+      .then(data => {
+        if (data.clips) {
+          setMediaItems(data.clips.map((clip: any) => ({
+            title: clip.title,
+            creator: clip.creator,
+            sourceUrl: clip.youtubeUrl,
+            summary: clip.viewsLabel || 'Official or approved YouTube embed slot.',
+            tags: ['EMBED', 'SAFE', clip.status],
+          })));
+        }
+      })
+      .catch(err => console.error("Failed to load media:", err));
+  }, []);
+
   return (
     <main className="min-h-screen px-6 py-10">
       <section className="mx-auto max-w-7xl">
@@ -75,7 +79,7 @@ export default function MediaPage() {
                   <p className="mt-3 text-white/60">{item.summary}</p>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
+                    {item.tags?.map((tag: string) => (
                       <span key={tag} className="rounded bg-emerald-500/20 px-2 py-1 text-xs font-bold text-emerald-300">
                         {tag}
                       </span>

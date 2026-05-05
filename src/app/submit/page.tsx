@@ -102,6 +102,20 @@ export default function SubmitPage() {
             <p className="text-xs text-white/60 leading-relaxed">Do not submit malicious links, self-promotion outside of the credit field, or content that violates the Epic Games Fan Site Policy. Submitting false reports will result in an IP ban from the contribution queue.</p>
           </div>
         </div>
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-white">Status: READY</h3>
+            <p className="mt-1 text-sm text-white/60">
+              Submission queue is open for manual review.
+            </p>
+          </div>
+          <a
+            href="/"
+            className="rounded-xl bg-white/10 px-5 py-3 font-bold text-white hover:bg-white/20 transition"
+          >
+            Return Home
+          </a>
+        </div>
       </div>
     </>
   );

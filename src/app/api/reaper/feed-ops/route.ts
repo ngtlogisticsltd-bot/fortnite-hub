@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { addManualFeedItem, getFeedItems, runFeedOps } from "@/lib/reaper/content/feedEngine";
 
 export async function GET() {
+  const items = await getFeedItems();
   return NextResponse.json({
     success: true,
-    items: getFeedItems(),
+    items,
   });
 }
 
